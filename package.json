@@ -1,0 +1,28 @@
+{
+  "name": "monorepo-trpc-scaffold",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint 'packages/**/*.{js,ts,tsx}'",
+    "format": "prettier --write 'packages/**/*.{js,ts,tsx,css,md}'",
+    "format:check": "prettier --check 'packages/**/*.{js,ts,tsx,css,md}'",
+    "dev:api": "pnpm --filter api dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.11.0",
+  "devDependencies": {
+    "@eslint/js": "^9.28.0",
+    "@typescript-eslint/eslint-plugin": "^8.33.0",
+    "@typescript-eslint/parser": "^8.33.0",
+    "eslint": "^9.28.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.4.1",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "prettier": "^3.5.3"
+  }
+}
