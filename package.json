@@ -6,6 +6,7 @@
   "scripts": {
     "dev:api": "pnpm --filter @monorepo-trpc-scaffold/api dev",
     "dev:web": "pnpm --filter @monorepo-trpc-scaffold/web dev",
+    "db:generate": "pnpm --filter @monorepo-trpc-scaffold/api prisma:generate",
     "add:web": "pnpm --filter @monorepo-trpc-scaffold/web add",
     "add:api": "pnpm --filter @monorepo-trpc-scaffold/api add",
     "test": "echo \"Error: no test specified\" && exit 1",
