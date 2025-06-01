@@ -10,15 +10,15 @@
     "@hono/node-server": "^1.14.3",
     "@hono/trpc-server": "^0.3.4",
     "@monorepo-trpc-scaffold/shared": "workspace:*",
-    "@prisma/client": "^5.22.0",
+    "@prisma/client": "^6.8.2",
     "@trpc/server": "^10.0.0",
-    "hono": "^4.7.10",
-    "zod": "^3.23.8"
+    "hono": "^4.7.11",
+    "zod": "^3.25.46"
   },
   "devDependencies": {
-    "@types/node": "^20.11.17",
-    "prisma": "^5.22.0",
-    "tsx": "^4.7.1",
+    "@types/node": "^22.15.29",
+    "prisma": "^6.8.2",
+    "tsx": "^4.19.4",
     "typescript": "^5.8.3"
   }
 }
