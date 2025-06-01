@@ -1,11 +1,13 @@
 {
-  "name": "monorepo-trpc-scaffold",
+  "name": "@monorepo-trpc-scaffold",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev:api": "pnpm --filter api dev",
-    "dev:web": "pnpm --filter web dev",
+    "dev:api": "pnpm --filter @monorepo-trpc-scaffold/api dev",
+    "dev:web": "pnpm --filter @monorepo-trpc-scaffold/web dev",
+    "add:web": "pnpm --filter @monorepo-trpc-scaffold/web add",
+    "add:api": "pnpm --filter @monorepo-trpc-scaffold/api add",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint 'packages/**/*.{js,ts,tsx}'",
     "format": "prettier --write 'packages/**/*.{js,ts,tsx,css,md}'",

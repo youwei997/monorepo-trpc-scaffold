@@ -9,7 +9,8 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@shared/*": ["packages/shared/src/*"]
+      "@monorepo-trpc-scaffold/shared/*": ["packages/shared/src/*"],
+      "@monorepo-trpc-scaffold/api/*": ["apps/api/src/*"]
     }
   }
 }

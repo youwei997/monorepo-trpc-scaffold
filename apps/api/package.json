@@ -1,5 +1,5 @@
 {
-  "name": "api",
+  "name": "@monorepo-trpc-scaffold/api",
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
@@ -8,7 +8,10 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.14.3",
-    "hono": "^4.7.10"
+    "@hono/trpc-server": "^0.3.4",
+    "@trpc/server": "^10.0.0",
+    "hono": "^4.7.10",
+    "@monorepo-trpc-scaffold/shared": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.11.17",
