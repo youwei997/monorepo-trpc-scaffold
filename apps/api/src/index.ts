@@ -1,18 +1,9 @@
 import { serve } from '@hono/node-server';
 import { trpcServer } from '@hono/trpc-server';
 import { greet } from '@monorepo-trpc-scaffold/shared/utils';
-import { initTRPC } from '@trpc/server';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-
-const t = initTRPC.create();
-const appRouter = t.router({
-  test: t.procedure.query(() => {
-    return { message: 'Hello from tRPC!' };
-  }),
-});
-
-export type AppRouter = typeof appRouter;
+import { appRouter } from './trpc/router';
 
 const app = new Hono();
 

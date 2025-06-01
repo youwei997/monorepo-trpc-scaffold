@@ -7,10 +7,18 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
-    "baseUrl": ".",
+    "composite": true, // 启用项目引用支持
+    "declaration": true, // 生成声明文件
+    "declarationMap": true,
+    "baseUrl": ".", // 相对根目录解析
     "paths": {
       "@monorepo-trpc-scaffold/shared/*": ["packages/shared/src/*"],
       "@monorepo-trpc-scaffold/api/*": ["apps/api/src/*"]
     }
-  }
+  },
+  "references": [
+    { "path": "packages/shared" },
+    { "path": "packages/api" },
+    { "path": "packages/web" }
+  ]
 }
