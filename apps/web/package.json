@@ -12,6 +12,7 @@
   "dependencies": {
     "@monorepo-trpc-scaffold/api": "workspace:*",
     "@monorepo-trpc-scaffold/shared": "workspace:*",
+    "@tanstack/react-query": "^5.79.0",
     "@trpc/client": "^11.1.4",
     "@trpc/react-query": "^11.1.4",
     "vite-tsconfig-paths": "^5.1.4"

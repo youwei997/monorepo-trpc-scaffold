@@ -1,36 +1,35 @@
-import { useEffect, useState } from 'react';
-import './App.css'; // Add a CSS file for styling
+import { useState } from 'react';
+import './App.css';
 import { trpc } from './trpc';
 
 function App() {
-  const [todos, setTodos] = useState([]);
   const [newTodoTitle, setNewTodoTitle] = useState('');
-  const [selectedTodo, setSelectedTodo] = useState(null);
+  const [selectedTodo, setSelectedTodo] = useState<{
+    id: number;
+    title: string;
+    completed: boolean;
+  } | null>(null);
 
-  useEffect(() => {
-    trpc.todo.getTodos.query().then(data => {
-      setTodos(data);
-    });
-  }, []);
+  const { data: todos = [], refetch } = trpc.todo.getTodos.useQuery();
 
-  const createTodo = () => {
-    trpc.todo.createTodo.mutate({ title: newTodoTitle }).then(newTodo => {
-      setTodos([...todos, newTodo]);
+  const createTodo = trpc.todo.createTodo.useMutation({
+    onSuccess: () => {
       setNewTodoTitle('');
-    });
-  };
+      refetch();
+    },
+  });
 
-  const updateTodo = (id: number, title: string, completed: boolean) => {
-    trpc.todo.updateTodo.mutate({ id, title, completed }).then(updatedTodo => {
-      setTodos(todos.map(todo => (todo.id === id ? updatedTodo : todo)));
-    });
-  };
+  const updateTodo = trpc.todo.updateTodo.useMutation({
+    onSuccess: () => {
+      refetch();
+    },
+  });
 
-  const deleteTodo = (id: number) => {
-    trpc.todo.deleteTodo.mutate({ id }).then(() => {
-      setTodos(todos.filter(todo => todo.id !== id));
-    });
-  };
+  const deleteTodo = trpc.todo.deleteTodo.useMutation({
+    onSuccess: () => {
+      refetch();
+    },
+  });
 
   return (
     <div className="app-container">
@@ -43,7 +42,10 @@ function App() {
           placeholder="New Todo Title"
           className="input"
         />
-        <button onClick={createTodo} className="button">
+        <button
+          onClick={() => createTodo.mutate({ title: newTodoTitle })}
+          className="button"
+        >
           Add Todo
         </button>
       </div>
@@ -60,11 +62,11 @@ function App() {
               }
               onBlur={() => {
                 if (selectedTodo) {
-                  updateTodo(
-                    selectedTodo.id,
-                    selectedTodo.title,
-                    selectedTodo.completed
-                  );
+                  updateTodo.mutate({
+                    id: selectedTodo.id,
+                    title: selectedTodo.title,
+                    completed: selectedTodo.completed,
+                  });
                   setSelectedTodo(null);
                 }
               }}
@@ -73,11 +75,17 @@ function App() {
             <input
               type="checkbox"
               checked={todo.completed}
-              onChange={e => updateTodo(todo.id, todo.title, e.target.checked)}
+              onChange={e =>
+                updateTodo.mutate({
+                  id: todo.id,
+                  title: todo.title,
+                  completed: e.target.checked,
+                })
+              }
               className="todo-checkbox"
             />
             <button
-              onClick={() => deleteTodo(todo.id)}
+              onClick={() => deleteTodo.mutate({ id: todo.id })}
               className="button delete-button"
             >
               Delete
