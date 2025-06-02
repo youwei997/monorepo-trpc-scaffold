@@ -10,12 +10,6 @@ import {
 } from 'react-native';
 import { trpcClient } from '../lib/trpc';
 
-type Todo = {
-  id: number;
-  title: string;
-  completed: boolean;
-  createdAt: string;
-};
 export default function Index() {
   const queryClient = useQueryClient();
   const [newTodo, setNewTodo] = useState('');
