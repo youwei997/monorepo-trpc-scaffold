@@ -3,9 +3,9 @@ import './App.css'; // Add a CSS file for styling
 import { trpc } from './trpc';
 
 function App() {
-  const [todos, setTodos] = useState<any[]>([]);
+  const [todos, setTodos] = useState([]);
   const [newTodoTitle, setNewTodoTitle] = useState('');
-  const [selectedTodo, setSelectedTodo] = useState<any>(null);
+  const [selectedTodo, setSelectedTodo] = useState(null);
 
   useEffect(() => {
     trpc.todo.getTodos.query().then(data => {
