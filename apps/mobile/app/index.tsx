@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import React, { useState } from 'react';
 import {
   FlatList,
   StyleSheet,
@@ -15,31 +16,24 @@ type Todo = {
   completed: boolean;
   createdAt: string;
 };
-
 export default function Index() {
-  const [todos, setTodos] = useState<Todo[]>([]);
+  const queryClient = useQueryClient();
   const [newTodo, setNewTodo] = useState('');
 
-  useEffect(() => {
-    const fetchTodos = async () => {
-      try {
-        const result = await trpcClient.todo.getTodos.query();
-        setTodos(result);
-      } catch (error) {
-        console.error('Failed to fetch todos:', error);
-      }
-    };
-
-    fetchTodos();
-  }, []);
+  const {
+    data: todos = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['todos'],
+    queryFn: () => trpcClient.todo.getTodos.query(),
+  });
 
   const addTodo = async () => {
     if (!newTodo.trim()) return;
     try {
-      const addedTodo = await trpcClient.todo.createTodo.mutate({
-        title: newTodo,
-      });
-      setTodos(prevTodos => [...prevTodos, addedTodo]);
+      await trpcClient.todo.createTodo.mutate({ title: newTodo });
+      queryClient.invalidateQueries({ queryKey: ['todos'] });
       setNewTodo('');
     } catch (error) {
       console.error('Failed to add todo:', error);
@@ -48,13 +42,11 @@ export default function Index() {
 
   const toggleTodoCompletion = async (id: number, completed: boolean) => {
     try {
-      const updatedTodo = await trpcClient.todo.updateTodo.mutate({
+      await trpcClient.todo.updateTodo.mutate({
         id,
         completed: !completed,
       });
-      setTodos(prevTodos =>
-        prevTodos.map(todo => (todo.id === id ? updatedTodo : todo))
-      );
+      queryClient.invalidateQueries({ queryKey: ['todos'] });
     } catch (error) {
       console.error('Failed to toggle todo completion:', error);
     }
@@ -63,17 +55,20 @@ export default function Index() {
   const deleteTodo = async (id: number) => {
     try {
       await trpcClient.todo.deleteTodo.mutate({ id });
-      setTodos(prevTodos => prevTodos.filter(todo => todo.id !== id));
+      queryClient.invalidateQueries({ queryKey: ['todos'] });
     } catch (error) {
       console.error('Failed to delete todo:', error);
     }
   };
 
+  if (isLoading) return <Text>加载中...</Text>;
+  if (error) return <Text>错误: {error.message}</Text>;
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Todo List</Text>
+      <Text style={styles.title}>待办事项</Text>
       <FlatList
-        style={styles.list} // Apply the same width style
+        style={styles.list}
         data={todos}
         keyExtractor={item => item.id.toString()}
         renderItem={({ item }) => (
@@ -87,14 +82,14 @@ export default function Index() {
                 onPress={() => toggleTodoCompletion(item.id, item.completed)}
               >
                 <Text style={styles.buttonText}>
-                  {item.completed ? 'Undo' : 'Complete'}
+                  {item.completed ? '撤销' : '完成'}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.button}
                 onPress={() => deleteTodo(item.id)}
               >
-                <Text style={styles.buttonText}>Delete</Text>
+                <Text style={styles.buttonText}>删除</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -102,16 +97,17 @@ export default function Index() {
       />
       <TextInput
         style={styles.input}
-        placeholder="New Todo"
+        placeholder="新待办事项"
         value={newTodo}
         onChangeText={setNewTodo}
       />
       <TouchableOpacity style={styles.addButton} onPress={addTodo}>
-        <Text style={styles.addButtonText}>Add Todo</Text>
+        <Text style={styles.addButtonText}>添加待办</Text>
       </TouchableOpacity>
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -127,7 +123,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   list: {
-    width: '100%', // Ensure the list takes the full width
+    width: '100%',
   },
   todoItemContainer: {
     flexDirection: 'row',
@@ -166,7 +162,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 8,
     marginBottom: 10,
-    width: '100%', // Ensure the input takes the full width
+    width: '100%',
     backgroundColor: '#fff',
   },
   addButton: {
