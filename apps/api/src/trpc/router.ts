@@ -11,3 +11,4 @@ export const appRouter = t.router({
 });
 
 export type AppRouter = typeof appRouter;
+// 最终决定使用export * 导出api生成的类型
