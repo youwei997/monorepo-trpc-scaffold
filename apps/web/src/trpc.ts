@@ -1,10 +1,13 @@
 import type { AppRouter } from '@monorepo-trpc-scaffold/shared/trpc/types';
-import { createTRPCProxyClient, httpLink } from '@trpc/client';
+import { httpBatchLink } from '@trpc/client';
+import { createTRPCReact } from '@trpc/react-query';
 
-export const trpc = createTRPCProxyClient<AppRouter>({
+export const trpc = createTRPCReact<AppRouter>();
+
+export const trpcClient = trpc.createClient({
   links: [
-    httpLink({
-      url: 'http://localhost:3000/trpc',
+    httpBatchLink({
+      url: 'http://localhost:3000/trpc', // 替换为 API 服务的实际地址
     }),
   ],
 });
