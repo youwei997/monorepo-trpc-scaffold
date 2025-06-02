@@ -1,59 +1,25 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
 import React, { useState } from 'react';
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import { trpcClient } from '../lib/trpc';
+import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { trpc } from '../lib/trpc'; // ✅ 引入新的 trpc
 
 export default function Index() {
-  const queryClient = useQueryClient();
   const [newTodo, setNewTodo] = useState('');
+  const { data: todos = [], isLoading, error, refetch } = trpc.todo.getTodos.useQuery();
 
-  const {
-    data: todos = [],
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ['todos'],
-    queryFn: () => trpcClient.todo.getTodos.query(),
+  const addTodo = trpc.todo.createTodo.useMutation({
+    onSuccess: () => {
+      refetch();
+      setNewTodo('');
+    },
   });
 
-  const addTodo = async () => {
-    if (!newTodo.trim()) return;
-    try {
-      await trpcClient.todo.createTodo.mutate({ title: newTodo });
-      queryClient.invalidateQueries({ queryKey: ['todos'] });
-      setNewTodo('');
-    } catch (error) {
-      console.error('Failed to add todo:', error);
-    }
-  };
+  const toggleTodo = trpc.todo.updateTodo.useMutation({
+    onSuccess: () => refetch(),
+  });
 
-  const toggleTodoCompletion = async (id: number, completed: boolean) => {
-    try {
-      await trpcClient.todo.updateTodo.mutate({
-        id,
-        completed: !completed,
-      });
-      queryClient.invalidateQueries({ queryKey: ['todos'] });
-    } catch (error) {
-      console.error('Failed to toggle todo completion:', error);
-    }
-  };
-
-  const deleteTodo = async (id: number) => {
-    try {
-      await trpcClient.todo.deleteTodo.mutate({ id });
-      queryClient.invalidateQueries({ queryKey: ['todos'] });
-    } catch (error) {
-      console.error('Failed to delete todo:', error);
-    }
-  };
+  const deleteTodo = trpc.todo.deleteTodo.useMutation({
+    onSuccess: () => refetch(),
+  });
 
   if (isLoading) return <Text>加载中...</Text>;
   if (error) return <Text>错误: {error.message}</Text>;
@@ -67,35 +33,23 @@ export default function Index() {
         keyExtractor={item => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.todoItemContainer}>
-            <Text style={[styles.todoItem, item.completed && styles.completed]}>
-              {item.title}
-            </Text>
+            <Text style={[styles.todoItem, item.completed && styles.completed]}>{item.title}</Text>
             <View style={styles.buttonsContainer}>
               <TouchableOpacity
                 style={styles.button}
-                onPress={() => toggleTodoCompletion(item.id, item.completed)}
+                onPress={() => toggleTodo.mutate({ id: item.id, completed: !item.completed })}
               >
-                <Text style={styles.buttonText}>
-                  {item.completed ? '撤销' : '完成'}
-                </Text>
+                <Text style={styles.buttonText}>{item.completed ? '撤销' : '完成'}</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() => deleteTodo(item.id)}
-              >
+              <TouchableOpacity style={styles.button} onPress={() => deleteTodo.mutate({ id: item.id })}>
                 <Text style={styles.buttonText}>删除</Text>
               </TouchableOpacity>
             </View>
           </View>
         )}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="新待办事项"
-        value={newTodo}
-        onChangeText={setNewTodo}
-      />
-      <TouchableOpacity style={styles.addButton} onPress={addTodo}>
+      <TextInput style={styles.input} placeholder="新待办事项" value={newTodo} onChangeText={setNewTodo} />
+      <TouchableOpacity style={styles.addButton} onPress={() => addTodo.mutate({ title: newTodo })}>
         <Text style={styles.addButtonText}>添加待办</Text>
       </TouchableOpacity>
     </View>
