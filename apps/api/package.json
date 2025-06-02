@@ -1,14 +1,16 @@
 {
   "name": "@monorepo-trpc-scaffold/api",
+  "version": "1.0.0",
+  "private": true,
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
     "prisma:generate": "prisma generate",
     "prisma:db-push": "prisma db push",
     "prisma:studio": "prisma studio",
-    "prisma:migrate": "prisma migrate dev --name",
-    "build": "tsc",
-    "start": "node dist/index.js"
+    "prisma:migrate": "prisma migrate dev --name"
   },
   "dependencies": {
     "@hono/node-server": "^1.14.3",
@@ -22,7 +24,6 @@
   "devDependencies": {
     "@types/node": "^22.15.29",
     "prisma": "^6.8.2",
-    "tsx": "^4.19.4",
-    "typescript": "^5.8.3"
+    "tsx": "^4.19.4"
   }
 }
