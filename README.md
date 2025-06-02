@@ -73,6 +73,16 @@
 
 #### 启动后端服务
 
+1. 在apps/api目录下创建.env文件并且加上以下内容`DATABASE_URL=file:./dev.db`，如果需要连接远程数据库，请修改为相应的数据库连接字符串。
+
+2. 生成 Prisma 客户端：`pnpm db:generate`
+
+3. 推送数据库模式到数据库：`pnpm db:push`
+
+4. 运行`pnpm db:studio `查看数据库表是否生成
+
+![](./docs/Snipaste_2025-06-02_20-02-51.png)
+
 运行以下命令启动 API 服务：
 
 ```sh
