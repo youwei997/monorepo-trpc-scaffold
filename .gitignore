@@ -46,3 +46,6 @@ Thumbs.db
 
 # 忽略子项目和shared目录下的node_modules
 **/node_modules/
+
+apps/**/dist/
+packages/**/dist/
