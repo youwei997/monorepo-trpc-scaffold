@@ -1,5 +1,7 @@
 # Monorepo TRPC Scaffold
 
+## 注：打包有点问题
+
 这是一个基于 Monorepo 的全栈项目脚手架，使用了 tRPC、Hono、React、TypeScript 和 Vite 等技术栈。项目通过 `pnpm` 工作区进行管理。
 
 ## 项目结构
